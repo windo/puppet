@@ -10,8 +10,8 @@ class Puppet::Parser::Expression
 
     # Short-curcuit evaluation.  Return the value of the statements for
     # the first option that matches.
-    def evaluate(scope)
-      value = @test.safeevaluate(scope)
+    def compute_denotation(scope)
+      value = @test.denotation(scope)
 
       retvalue = nil
       found = false
@@ -20,14 +20,14 @@ class Puppet::Parser::Expression
       default = nil
       @options.each do |option|
         option.eachopt do |opt|
-          return option.safeevaluate(scope) if opt.evaluate_match(value, scope, :file => file, :line => line, :sensitive => Puppet[:casesensitive])
+          return option.denotation(scope) if opt.evaluate_match(value, scope, :file => file, :line => line, :sensitive => Puppet[:casesensitive])
         end
 
         default = option if option.default?
       end
 
       # Unless we found something, look for the default.
-      return default.safeevaluate(scope) if default
+      return default.denotation(scope) if default
 
       Puppet.debug "No true answers and no default"
       return nil

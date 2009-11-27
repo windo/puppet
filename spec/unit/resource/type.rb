@@ -236,7 +236,7 @@ describe Puppet::Resource::Type do
     end
 
     it "should evaluate and set its default values as variables for parameters not provided by the resource" do
-      @type.set_arguments :foo => stub("value", :safeevaluate => "something")
+      @type.set_arguments :foo => stub("value", :denotation => "something")
       @resource.expects(:to_hash).returns({})
 
       @scope.expects(:setvar).with("foo", "something")
@@ -365,7 +365,7 @@ describe Puppet::Resource::Type do
       code = stub 'code'
       @type.stubs(:code).returns code
       @type.stubs(:subscope).returns stub("subscope", :compiler => @compiler)
-      code.expects(:safeevaluate).with @type.subscope
+      code.expects(:denotation).with @type.subscope
 
       @type.evaluate_code(@resource)
     end

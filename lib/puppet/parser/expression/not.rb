@@ -11,8 +11,8 @@ class Puppet::Parser::Expression
       yield @value
     end
 
-    def evaluate(scope)
-      val = @value.safeevaluate(scope)
+    def compute_denotation(scope)
+      val = @value.denotation(scope)
       return ! Puppet::Parser::Scope.true?(val)
     end
   end
