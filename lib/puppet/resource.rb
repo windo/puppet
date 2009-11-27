@@ -165,7 +165,7 @@ class Puppet::Resource
             extract_parameters(params)
         end
 
-        resolve_type_and_title()
+        resolve_type_and_title
 
         tag(self.type)
         tag(self.title) if valid_tag?(self.title)
@@ -369,7 +369,7 @@ class Puppet::Resource
     # Produce a canonical method name.
     def parameter_name(param)
         param = param.to_s.downcase.to_sym
-        if param == :name and n = namevar()
+        if param == :name and n = namevar
             param = namevar
         end
         param
