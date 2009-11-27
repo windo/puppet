@@ -11,18 +11,18 @@ describe Puppet::Parser::Expression::Selector do
 
     before :each do
       @param = stub 'param'
-      @param.stubs(:denotation).with(@scope).returns("value")
+      @param.stubs(:denotation).returns("value")
 
       @value1 = stub 'value1'
       @param1 = stub_everything 'param1'
-      @param1.stubs(:denotation).with(@scope).returns(@param1)
+      @param1.stubs(:denotation).returns(@param1)
       @param1.stubs(:respond_to?).with(:downcase).returns(false)
       @value1.stubs(:param).returns(@param1)
       @value1.stubs(:value).returns(@value1)
 
       @value2 = stub 'value2'
       @param2 = stub_everything 'param2'
-      @param2.stubs(:denotation).with(@scope).returns(@param2)
+      @param2.stubs(:denotation).returns(@param2)
       @param2.stubs(:respond_to?).with(:downcase).returns(false)
       @value2.stubs(:param).returns(@param2)
       @value2.stubs(:value).returns(@value2)
@@ -35,37 +35,37 @@ describe Puppet::Parser::Expression::Selector do
     end
 
     it "should evaluate param" do
-      @param.expects(:denotation).with(@scope)
+      @param.expects(:denotation)
 
-      @selector.compute_denotation(@scope)
+      @selector.compute_denotation
     end
 
     it "should scan each option" do
       @values.expects(:each).multiple_yields(@value1, @value2)
 
-      @selector.compute_denotation(@scope)
+      @selector.compute_denotation
     end
 
     describe "when scanning values" do
       it "should evaluate first matching option" do
         @param2.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
-        @value2.expects(:denotation).with(@scope)
+        @value2.expects(:denotation)
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should return the first matching evaluated option" do
         @param2.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
-        @value2.stubs(:denotation).with(@scope).returns(:result)
+        @value2.stubs(:denotation).returns(:result)
 
-        @selector.compute_denotation(@scope).should == :result
+        @selector.compute_denotation.should == :result
       end
 
       it "should evaluate the default option if none matched" do
         @param1.stubs(:is_a?).with(Puppet::Parser::Expression::Default).returns(true)
-        @value1.expects(:denotation).with(@scope).returns(@param1)
+        @value1.expects(:denotation).returns(@param1)
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should return the default evaluated option if none matched" do
@@ -73,24 +73,24 @@ describe Puppet::Parser::Expression::Selector do
         @param1.stubs(:is_a?).with(Puppet::Parser::Expression::Default).returns(true)
         @value1.stubs(:denotation).returns(result)
 
-        @selector.compute_denotation(@scope).should == result
+        @selector.compute_denotation.should == result
       end
 
       it "should return nil if nothing matched" do
-        @selector.compute_denotation(@scope).should be_nil
+        @selector.compute_denotation.should be_nil
       end
 
       it "should delegate matching to evaluate_match" do
-        @param1.expects(:evaluate_match).with { |*arg| arg[0] == "value" and arg[1] == @scope }
+        @param1.expects(:evaluate_match).with { |*arg| arg[0] == "value" }
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should transmit the sensitive parameter to evaluate_match" do
         Puppet.stubs(:[]).with(:casesensitive).returns(:sensitive)
         @param1.expects(:evaluate_match).with { |*arg| arg[2][:sensitive] == :sensitive }
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should transmit the Expression file and line to evaluate_match" do
@@ -98,47 +98,47 @@ describe Puppet::Parser::Expression::Selector do
         @selector.line = :line
         @param1.expects(:evaluate_match).with { |*arg| arg[2][:file] == :file and arg[2][:line] == :line }
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
 
       it "should evaluate the matching param" do
-        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" and arg[1] == @scope }.returns(true)
+        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
 
-        @value1.expects(:denotation).with(@scope)
+        @value1.expects(:denotation)
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should return this evaluated option if it matches" do
-        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" and arg[1] == @scope }.returns(true)
-        @value1.stubs(:denotation).with(@scope).returns(:result)
+        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
+        @value1.stubs(:denotation).returns(:result)
 
-        @selector.compute_denotation(@scope).should == :result
+        @selector.compute_denotation.should == :result
       end
 
       it "should unset scope ephemeral variables after option evaluation" do
-        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" and arg[1] == @scope }.returns(true)
-        @value1.stubs(:denotation).with(@scope).returns(:result)
+        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
+        @value1.stubs(:denotation).returns(:result)
 
         @scope.expects(:unset_ephemeral_var)
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
 
       it "should not leak ephemeral variables even if evaluation fails" do
-        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" and arg[1] == @scope }.returns(true)
-        @value1.stubs(:denotation).with(@scope).raises
+        @param1.stubs(:evaluate_match).with { |*arg| arg[0] == "value" }.returns(true)
+        @value1.stubs(:denotation).raises
 
         @scope.expects(:unset_ephemeral_var)
 
-        lambda { @selector.compute_denotation(@scope) }.should raise_error
+        lambda { @selector.compute_denotation }.should raise_error
       end
 
       it "should fail if there is no default" do
         @selector.expects(:fail)
 
-        @selector.compute_denotation(@scope)
+        @selector.compute_denotation
       end
     end
   end

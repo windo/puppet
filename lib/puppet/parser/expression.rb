@@ -65,7 +65,7 @@ class Puppet::Parser::Expression
   # correctly handles errors.  It is critical to use this method because
   # it can enable you to catch the error where it happens, rather than
   # much higher up the stack.
-  def denotation(*options)
+  def denotation
     # We duplicate code here, rather than using exceptwrap, because this
     # is called so many times during parsing.
     begin

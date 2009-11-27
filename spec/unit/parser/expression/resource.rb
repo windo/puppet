@@ -16,14 +16,14 @@ describe Puppet::Parser::Expression::Resource do
 
   it "should evaluate all its parameters" do
     param = stub 'param'
-    param.expects(:denotation).with(@scope).returns Puppet::Parser::Resource::Param.new(:name => "myparam", :value => "myvalue", :source => stub("source"))
+    param.expects(:denotation).returns Puppet::Parser::Resource::Param.new(:name => "myparam", :value => "myvalue", :source => stub("source"))
     @resource.stubs(:parameters).returns [param]
 
-    @resource.compute_denotation(@scope)
+    @resource.compute_denotation
   end
 
   it "should evaluate its title" do
-    @resource.compute_denotation(@scope)[0].title.should == "mytitle"
+    @resource.compute_denotation[0].title.should == "mytitle"
   end
 
   it "should flatten the titles array" do
@@ -35,7 +35,7 @@ describe Puppet::Parser::Expression::Resource do
     array = Puppet::Parser::Expression::ArrayConstructor.new(:children => titles)
 
     @resource.title = array
-    result = @resource.compute_denotation(@scope).collect { |r| r.title }
+    result = @resource.compute_denotation.collect { |r| r.title }
     result.should be_include("one")
     result.should be_include("two")
   end
@@ -49,7 +49,7 @@ describe Puppet::Parser::Expression::Resource do
     array = Puppet::Parser::Expression::ArrayConstructor.new(:children => titles)
 
     @resource.title = array
-    result = @resource.compute_denotation(@scope).collect { |r| r.title }
+    result = @resource.compute_denotation.collect { |r| r.title }
     result.should be_include("one")
     result.should be_include("two")
   end
@@ -63,7 +63,7 @@ describe Puppet::Parser::Expression::Resource do
     array = Puppet::Parser::Expression::ArrayConstructor.new(:children => titles)
 
     @resource.title = array
-    result = @resource.compute_denotation(@scope)
+    result = @resource.compute_denotation
 
     result.each do |res|
       @compiler.catalog.resource(res.ref).should be_instance_of(Puppet::Parser::Resource)
@@ -72,14 +72,14 @@ describe Puppet::Parser::Expression::Resource do
   it "should generate virtual resources if it is virtual" do
     @resource.virtual = true
 
-    result = @resource.compute_denotation(@scope)
+    result = @resource.compute_denotation
     result[0].should be_virtual
   end
 
   it "should generate virtual and exported resources if it is exported" do
     @resource.exported = true
 
-    result = @resource.compute_denotation(@scope)
+    result = @resource.compute_denotation
     result[0].should be_virtual
     result[0].should be_exported
   end
@@ -102,19 +102,19 @@ describe Puppet::Parser::Expression::Resource do
     end
 
     it "should be able to generate resources with fully qualified type information" do
-      resource("two").compute_denotation(@twoscope)[0].type.should == "One::Two"
+      resource("two").compute_denotation[0].type.should == "One::Two"
     end
 
     it "should be able to generate resources with unqualified type information" do
-      resource("one").compute_denotation(@twoscope)[0].type.should == "One"
+      resource("one").compute_denotation[0].type.should == "One"
     end
 
     it "should correctly generate resources that can look up builtin types" do
-      resource("file").compute_denotation(@twoscope)[0].type.should == "File"
+      resource("file").compute_denotation[0].type.should == "File"
     end
 
     it "should fail for resource types that do not exist" do
-      lambda { resource("nosuchtype").compute_denotation(@twoscope) }.should raise_error(Puppet::ParseError)
+      lambda { resource("nosuchtype").compute_denotation }.should raise_error(Puppet::ParseError)
     end
   end
 end

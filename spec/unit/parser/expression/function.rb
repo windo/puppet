@@ -28,7 +28,7 @@ describe Puppet::Parser::Expression::Function do
       Puppet::Parser::Functions.stubs(:function).returns(false)
       func = Puppet::Parser::Expression::Function.new :name => "dontexist"
 
-      lambda{ func.compute_denotation(@scope) }.should raise_error(Puppet::ParseError)
+      lambda{ func.compute_denotation }.should raise_error(Puppet::ParseError)
     end
 
     it "should fail if the function is a statement used as rvalue" do
@@ -37,7 +37,7 @@ describe Puppet::Parser::Expression::Function do
 
       func = Puppet::Parser::Expression::Function.new :name => "exist", :ftype => :rvalue
 
-      lambda{ func.compute_denotation(@scope) }.should raise_error(Puppet::ParseError, "Function 'exist' does not return a value")
+      lambda{ func.compute_denotation }.should raise_error(Puppet::ParseError, "Function 'exist' does not return a value")
     end
 
     it "should fail if the function is an rvalue used as statement" do
@@ -46,7 +46,7 @@ describe Puppet::Parser::Expression::Function do
 
       func = Puppet::Parser::Expression::Function.new :name => "exist", :ftype => :statement
 
-      lambda{ func.compute_denotation(@scope) }.should raise_error(Puppet::ParseError,"Function 'exist' must be the value of a statement")
+      lambda{ func.compute_denotation }.should raise_error(Puppet::ParseError,"Function 'exist' must be the value of a statement")
     end
 
     it "should evaluate its arguments" do
@@ -55,9 +55,9 @@ describe Puppet::Parser::Expression::Function do
       func = Puppet::Parser::Expression::Function.new :name => "exist", :ftype => :statement, :arguments => argument
       @scope.stubs(:function_exist)
 
-      argument.expects(:denotation).with(@scope).returns("argument")
+      argument.expects(:denotation).returns("argument")
 
-      func.compute_denotation(@scope)
+      func.compute_denotation
     end
 
     it "should call the underlying ruby function" do
@@ -67,7 +67,7 @@ describe Puppet::Parser::Expression::Function do
 
       @scope.expects(:function_exist).with("nothing")
 
-      func.compute_denotation(@scope)
+      func.compute_denotation
     end
 
     it "should return the ruby function return for rvalue functions" do
@@ -76,7 +76,7 @@ describe Puppet::Parser::Expression::Function do
       func = Puppet::Parser::Expression::Function.new :name => "exist", :ftype => :statement, :arguments => argument
       @scope.stubs(:function_exist).with("nothing").returns("returning")
 
-      func.compute_denotation(@scope).should == "returning"
+      func.compute_denotation.should == "returning"
     end
 
   end

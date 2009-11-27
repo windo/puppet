@@ -11,8 +11,8 @@ class Puppet::Parser::Expression
       yield @value
     end
 
-    def compute_denotation(scope)
-      val = @value.denotation(scope)
+    def compute_denotation
+      val = @value.denotation
       val = Puppet::Parser::Scope.number?(val)
       if val == nil
         raise ArgumentError, "minus operand #{val} is not a number"

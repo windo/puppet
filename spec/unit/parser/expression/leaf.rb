@@ -15,37 +15,37 @@ describe Puppet::Parser::Expression::Leaf do
 
   describe "when evaluate_match is called" do
     it "should evaluate itself" do
-      @leaf.expects(:denotation).with(@scope)
+      @leaf.expects(:denotation)
 
-      @leaf.evaluate_match("value", @scope)
+      @leaf.evaluate_match("value")
     end
 
     it "should match values by equality" do
       @value.stubs(:==).returns(false)
-      @leaf.stubs(:denotation).with(@scope).returns(@value)
+      @leaf.stubs(:denotation).returns(@value)
       @value.expects(:==).with("value")
 
-      @leaf.evaluate_match("value", @scope)
+      @leaf.evaluate_match("value")
     end
 
     it "should downcase the evaluated value if wanted" do
-      @leaf.stubs(:denotation).with(@scope).returns(@value)
+      @leaf.stubs(:denotation).returns(@value)
       @value.expects(:downcase).returns("value")
 
-      @leaf.evaluate_match("value", @scope, :insensitive => true)
+      @leaf.evaluate_match("value", :insensitive => true)
     end
 
     it "should match undef if value is an empty string" do
-      @leaf.stubs(:denotation).with(@scope).returns("")
+      @leaf.stubs(:denotation).returns("")
 
-      @leaf.evaluate_match(:undef, @scope).should be_true
+      @leaf.evaluate_match(:undef).should be_true
     end
 
     it "should downcase the parameter value if wanted" do
       parameter = stub 'parameter'
       parameter.expects(:downcase).returns("value")
 
-      @leaf.evaluate_match(parameter, @scope, :insensitive => true)
+      @leaf.evaluate_match(parameter, :insensitive => true)
     end
   end
 
@@ -93,11 +93,11 @@ describe Puppet::Parser::Expression::Undef do
   end
 
   it "should match undef with undef" do
-    @undef.evaluate_match(:undef, @scope).should be_true
+    @undef.evaluate_match(:undef).should be_true
   end
 
   it "should not match undef with an empty string" do
-    @undef.evaluate_match("", @scope).should be_false
+    @undef.evaluate_match("").should be_false
   end
 end
 
@@ -113,9 +113,9 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
       variable = stub 'variable', :evaluate => "a"
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => variable, :key => 0 )
 
-      variable.expects(:denotation).with(@scope).returns("a")
+      variable.expects(:denotation).returns("a")
 
-      access.compute_denotation(@scope).should == "b"
+      access.compute_denotation.should == "b"
     end
 
     it "should evaluate the access key part if necessary" do
@@ -124,9 +124,9 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
       index = stub 'index', :evaluate => 0
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => index )
 
-      index.expects(:denotation).with(@scope).returns(0)
+      index.expects(:denotation).returns(0)
 
-      access.compute_denotation(@scope).should == "b"
+      access.compute_denotation.should == "b"
     end
 
     it "should be able to return an array member" do
@@ -134,7 +134,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
 
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => 1 )
 
-      access.compute_denotation(@scope).should == "val2"
+      access.compute_denotation.should == "val2"
     end
 
     it "should be able to return an hash value" do
@@ -142,7 +142,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
 
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => "key2" )
 
-      access.compute_denotation(@scope).should == "val2"
+      access.compute_denotation.should == "val2"
     end
 
     it "should raise an error if the variable lookup didn't return an hash or an array" do
@@ -150,7 +150,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
 
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => "key2" )
 
-      lambda { access.compute_denotation(@scope) }.should raise_error
+      lambda { access.compute_denotation }.should raise_error
     end
 
     it "should raise an error if the variable wasn't in the scope" do
@@ -158,7 +158,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
 
       access = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => "key2" )
 
-      lambda { access.compute_denotation(@scope) }.should raise_error
+      lambda { access.compute_denotation }.should raise_error
     end
 
     it "should return a correct string representation" do
@@ -172,7 +172,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
       access1 = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => "key")
       access2 = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => access1, :key => "subkey")
 
-      access2.compute_denotation(@scope).should == 'b'
+      access2.compute_denotation.should == 'b'
     end
 
     it "should work with interleaved array and hash access" do
@@ -181,7 +181,7 @@ describe Puppet::Parser::Expression::HashOrArrayAccess do
       access1 = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => "a", :key => "key")
       access2 = Puppet::Parser::Expression::HashOrArrayAccess.new(:variable => access1, :key => 1)
 
-      access2.compute_denotation(@scope).should == 'b'
+      access2.compute_denotation.should == 'b'
     end
   end
 
@@ -229,7 +229,7 @@ describe Puppet::Parser::Expression::Regex do
     it "should return self" do
       val = Puppet::Parser::Expression::Regex.new :value => "/ab/"
 
-      val.compute_denotation(@scope).should === val
+      val.compute_denotation.should === val
     end
   end
 
@@ -244,26 +244,26 @@ describe Puppet::Parser::Expression::Regex do
     it "should issue the regexp match" do
       @value.expects(:match).with("value")
 
-      @regex.evaluate_match("value", @scope)
+      @regex.evaluate_match("value")
     end
 
     it "should not downcase the paramater value" do
       @value.expects(:match).with("VaLuE")
 
-      @regex.evaluate_match("VaLuE", @scope)
+      @regex.evaluate_match("VaLuE")
     end
 
     it "should set ephemeral scope vars if there is a match" do
       @scope.expects(:ephemeral_from).with(true, nil, nil)
 
-      @regex.evaluate_match("value", @scope)
+      @regex.evaluate_match("value")
     end
 
     it "should return the match to the caller" do
       @value.stubs(:match).with("value").returns(:match)
       @scope.stubs(:ephemeral_from)
 
-      @regex.evaluate_match("value", @scope)
+      @regex.evaluate_match("value")
     end
   end
 
@@ -296,12 +296,12 @@ describe Puppet::Parser::Expression::Variable do
 
   it "should lookup the variable in scope" do
     @scope.expects(:lookupvar).with("myvar", false).returns(:myvalue)
-    @var.denotation(@scope).should == :myvalue
+    @var.denotation.should == :myvalue
   end
 
   it "should return undef if the variable wasn't set" do
     @scope.expects(:lookupvar).with("myvar", false).returns(:undefined)
-    @var.denotation(@scope).should == :undef
+    @var.denotation.should == :undef
   end
 
   describe "when converting to string" do
@@ -346,7 +346,7 @@ describe Puppet::Parser::Expression::HostName do
   end
 
   it "should evaluate to its value" do
-    @host.compute_denotation(@scope).should == @value
+    @host.compute_denotation.should == @value
   end
 
   it "should delegate eql? to the underlying value if it is an HostName" do

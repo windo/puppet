@@ -365,7 +365,7 @@ describe Puppet::Resource::Type do
       code = stub 'code'
       @type.stubs(:code).returns code
       @type.stubs(:subscope).returns stub("subscope", :compiler => @compiler)
-      code.expects(:denotation).with @type.subscope
+      code.expects(:denotation)
 
       @type.evaluate_code(@resource)
     end

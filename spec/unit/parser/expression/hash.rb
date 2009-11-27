@@ -39,11 +39,11 @@ describe Puppet::Parser::Expression::HashConstructor do
     key2 = stub "key2"
     value2 = stub "value2"
 
-    value1.expects(:denotation).with(@scope).returns("b")
-    value2.expects(:denotation).with(@scope).returns("d")
+    value1.expects(:denotation).returns("b")
+    value2.expects(:denotation).returns("d")
 
     operator = Puppet::Parser::Expression::HashConstructor.new(:value => { key1 => value1, key2 => value2})
-    operator.compute_denotation(@scope)
+    operator.compute_denotation
   end
 
   it "should return an evaluated hash" do
@@ -53,7 +53,7 @@ describe Puppet::Parser::Expression::HashConstructor do
     value2 = stub "value2", :denotation => "d"
 
     operator = Puppet::Parser::Expression::HashConstructor.new(:value => { key1 => value1, key2 => value2})
-    operator.compute_denotation(@scope).should == { key1 => "b", key2 => "d" }
+    operator.compute_denotation.should == { key1 => "b", key2 => "d" }
   end
 
   it "should return a valid string with to_s" do

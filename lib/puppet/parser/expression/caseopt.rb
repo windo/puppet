@@ -38,10 +38,10 @@ class Puppet::Parser::Expression
     def eachvalue(scope)
       if @value.is_a?(Expression::ArrayConstructor)
         @value.each { |subval|
-          yield subval.denotation(scope)
+          yield subval.denotation
         }
       else
-        yield @value.denotation(scope)
+        yield @value.denotation
       end
     end
 
@@ -57,8 +57,8 @@ class Puppet::Parser::Expression
 
     # Evaluate the actual statements; this only gets called if
     # our option matched.
-    def compute_denotation(scope)
-      return @statements.denotation(scope)
+    def compute_denotation
+      return @statements.denotation
     end
   end
 end

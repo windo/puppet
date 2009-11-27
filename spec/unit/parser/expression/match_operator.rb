@@ -7,7 +7,7 @@ describe Puppet::Parser::Expression::MatchOperator do
     @scope = Puppet::Parser::Scope.new
 
     @lval = stub 'lval'
-    @lval.stubs(:denotation).with(@scope).returns("this is a string")
+    @lval.stubs(:denotation).returns("this is a string")
 
     @rval = stub 'rval'
     @rval.stubs(:evaluate_match)
@@ -16,9 +16,9 @@ describe Puppet::Parser::Expression::MatchOperator do
   end
 
   it "should evaluate the left operand" do
-    @lval.expects(:denotation).with(@scope)
+    @lval.expects(:denotation)
 
-    @operator.compute_denotation(@scope)
+    @operator.compute_denotation
   end
 
   it "should fail for an unknown operator" do
@@ -26,25 +26,25 @@ describe Puppet::Parser::Expression::MatchOperator do
   end
 
   it "should evaluate_match the left operand" do
-    @rval.expects(:evaluate_match).with("this is a string", @scope).returns(:match)
+    @rval.expects(:evaluate_match).with("this is a string").returns(:match)
 
-    @operator.compute_denotation(@scope)
+    @operator.compute_denotation
   end
 
   { "=~" => true, "!~" => false }.each do |op, res|
     it "should return #{res} if the regexp matches with #{op}" do
       match = stub 'match'
-      @rval.stubs(:evaluate_match).with("this is a string", @scope).returns(match)
+      @rval.stubs(:evaluate_match).with("this is a string").returns(match)
 
       operator = Puppet::Parser::Expression::MatchOperator.new :lval => @lval, :rval => @rval, :operator => op
-      operator.compute_denotation(@scope).should == res
+      operator.compute_denotation.should == res
     end
 
     it "should return #{!res} if the regexp doesn't match" do
-      @rval.stubs(:evaluate_match).with("this is a string", @scope).returns(nil)
+      @rval.stubs(:evaluate_match).with("this is a string").returns(nil)
 
       operator = Puppet::Parser::Expression::MatchOperator.new :lval => @lval, :rval => @rval, :operator => op
-      operator.compute_denotation(@scope).should == !res
+      operator.compute_denotation.should == !res
     end
   end
 end

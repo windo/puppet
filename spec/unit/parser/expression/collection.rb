@@ -17,9 +17,9 @@ describe Puppet::Parser::Expression::Collection do
     query = mock 'query'
     collection = Puppet::Parser::Expression::Collection.new :query => query, :form => :virtual
 
-    query.expects(:denotation).with(@scope)
+    query.expects(:denotation)
 
-    collection.compute_denotation(@scope)
+    collection.compute_denotation
   end
 
   it "should instantiate a Collector for this type" do
@@ -27,7 +27,7 @@ describe Puppet::Parser::Expression::Collection do
 
     Puppet::Parser::Collector.expects(:new).with(@scope, "test", nil, nil, :virtual)
 
-    collection.compute_denotation(@scope)
+    collection.compute_denotation
   end
 
   it "should tell the compiler about this collector" do
@@ -36,7 +36,7 @@ describe Puppet::Parser::Expression::Collection do
 
     @compiler.expects(:add_collection).with("whatever")
 
-    collection.compute_denotation(@scope)
+    collection.compute_denotation
   end
 
   it "should evaluate overriden paramaters" do
@@ -44,9 +44,9 @@ describe Puppet::Parser::Expression::Collection do
     collection = Puppet::Parser::Expression::Collection.new :form => :virtual, :type => "test", :override => @overrides
     Puppet::Parser::Collector.stubs(:new).returns(collector)
 
-    @overrides.expects(:denotation).with(@scope)
+    @overrides.expects(:denotation)
 
-    collection.compute_denotation(@scope)
+    collection.compute_denotation
   end
 
   it "should tell the collector about overrides" do
@@ -56,7 +56,7 @@ describe Puppet::Parser::Expression::Collection do
 
     collector.expects(:add_override)
 
-    collection.compute_denotation(@scope)
+    collection.compute_denotation
   end
 
 
