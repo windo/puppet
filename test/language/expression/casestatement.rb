@@ -82,14 +82,13 @@ class TestCaseStatement < Test::Unit::TestCase
     end
     options << Expression::CaseOpt.new(:value => Expression::Default.new(:value => "default"), :statements => Expression::Leaf.new(:value => "default"))
 
-    ast = nil
-    param = Expression::Variable.new(:value => "testparam")
-    assert_nothing_raised do
-      ast = Expression::CaseStatement.new(:test => param, :options => options)
-    end
-    result = nil
     tests.each do |should, values|
       values.each do |value|
+        ast = nil
+        param = Expression::Variable.new(:value => "testparam")
+        assert_nothing_raised do
+          ast = Expression::CaseStatement.new(:test => param, :options => options)
+        end
         result = nil
         scope = mkscope
         scope.setvar("testparam", value)
