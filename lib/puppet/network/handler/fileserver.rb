@@ -447,8 +447,8 @@ class Puppet::Network::Handler
 
             # Return a fully qualified path, given a short path and
             # possibly a client name.
-            def file_path(relative_path, node = nil)
-                full_path = path(node)
+def file_path(relative_path, node = nil)
+                    full_path = path(node)
 
                 unless full_path
                     p self
@@ -458,8 +458,8 @@ class Puppet::Network::Handler
                 # If there's no relative path name, then we're serving the mount itself.
                 return full_path unless relative_path and relative_path != "/"
 
-                return File.join(full_path, relative_path)
-            end
+    File.join(full_path, relative_path)
+end
 
             # Create out object.  It must have a name.
             def initialize(name, path = nil)
@@ -479,8 +479,8 @@ class Puppet::Network::Handler
                 super()
             end
 
-            def fileobj(path, links, client)
-                obj = nil
+def fileobj(path, links, client)
+                    obj = nil
                 if obj = @files[file_path(path, client)]
                     # This can only happen in local fileserving, but it's an
                     # important one.  It'd be nice if we didn't just set
@@ -505,8 +505,8 @@ class Puppet::Network::Handler
                 # This, ah, might be completely redundant
                 obj[:links] = links unless obj[:links] == links
 
-                return obj
-            end
+    obj
+end
 
             # Read the contents of the file at the relative path given.
             def read_file(relpath, client)
@@ -638,8 +638,8 @@ class Puppet::Network::Handler
                 return nil
             end
 
-            def reclist(abspath, recurse, ignore)
-                require 'puppet/file_serving'
+def reclist(abspath, recurse, ignore)
+                    require 'puppet/file_serving'
                 require 'puppet/file_serving/fileset'
                 if recurse.is_a?(Fixnum)
                     args = { :recurse => true, :recurselimit => recurse, :links => :follow }
@@ -659,8 +659,8 @@ class Puppet::Network::Handler
                     [ file, stat.ftype ]
                 end
 
-                return ary.compact
-            end
+    ary.compact
+end
 
         end
 

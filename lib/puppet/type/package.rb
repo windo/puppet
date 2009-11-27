@@ -99,8 +99,8 @@ module Puppet
 
             # Override the parent method, because we've got all kinds of
             # funky definitions of 'in sync'.
-            def insync?(is)
-                @should ||= []
+def insync?(is)
+                    @should ||= []
 
                 @latest = nil unless defined?(@latest)
                 @lateststamp ||= (Time.now.to_i - 1000)
@@ -148,8 +148,8 @@ module Puppet
                     end
                 }
 
-                return false
-            end
+    false
+end
 
             # This retrieves the current state. LAK: I think this method is unused.
             def retrieve

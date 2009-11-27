@@ -99,8 +99,8 @@ module Puppet
                 end
             end
 
-            def insync?(is)
-                return true unless self.should
+def insync?(is)
+                    return true unless self.should
 
                 # We know the 'is' is a number, so we need to convert the 'should' to a number,
                 # too.
@@ -108,8 +108,8 @@ module Puppet
                     return true if number = Puppet::Util.gid(value) and is == number
                 end
 
-                return false
-            end
+    false
+end
 
             def sync
                 found = false

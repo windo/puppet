@@ -103,12 +103,12 @@ describe Puppet::Parser::Scope do
                 @known_resource_types.add Puppet::Resource::Type.new(:hostclass, name)
             end
 
-            def create_class_scope(name)
-                klass = newclass(name)
+def create_class_scope(name)
+                    klass = newclass(name)
                 Puppet::Parser::Resource.new("class", name, :scope => @scope, :source => mock('source')).evaluate
 
-                return @scope.class_scope(klass)
-            end
+    @scope.class_scope(klass)
+end
 
             it "should be able to look up explicitly fully qualified variables from main" do
                 other_scope = create_class_scope("")
