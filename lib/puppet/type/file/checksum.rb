@@ -55,7 +55,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
             if FileTest.directory?(@resource[:path])
                 return :time
             elsif @resource[:source] and value.to_s != "md5"
-                self.warning("Files with source set must use md5 as checksum. Forcing to md5 from %s for %s" % [ value, @resource[:path] ])
+                self.warning("Files with source set must use md5 as checksum. Forcing to md5 from #{value} for #{@resource[:path]}")
                 return :md5
             else
                 return symbolize(value)
@@ -82,7 +82,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
 
         if sum
             unless sum =~ /\{\w+\}/
-                sum = "{%s}%s" % [type, sum]
+                sum = "{#{type}}#{sum}"
             end
             state[type] = sum
         else
@@ -105,20 +105,20 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     def change_to_s(currentvalue, newvalue)
         begin
             if currentvalue == :absent
-                return "defined '%s' as '%s'" % [self.name, self.currentsum]
+                return "defined '#{self.name}' as '#{self.currentsum}'"
             elsif newvalue == :absent
-                return "undefined %s from '%s'" % [self.name, self.is_to_s(currentvalue)]
+                return "undefined #{self.name} from '#{self.is_to_s(currentvalue)}'"
             else
                 if defined? @cached and @cached
-                    return "%s changed '%s' to '%s'" % [self.name, @cached, self.is_to_s(currentvalue)]
+                    return "#{self.name} changed '#{@cached}' to '#{self.is_to_s(currentvalue)}'"
                 else
-                    return "%s changed '%s' to '%s'" % [self.name, self.currentsum, self.is_to_s(currentvalue)]
+                    return "#{self.name} changed '#{self.currentsum}' to '#{self.is_to_s(currentvalue)}'"
                 end
             end
         rescue Puppet::Error, Puppet::DevError
             raise
         rescue => detail
-            raise Puppet::DevError, "Could not convert change %s to string: %s" % [self.name, detail]
+            raise Puppet::DevError, "Could not convert change #{self.name} to string: #{detail}"
         end
     end
 
@@ -143,9 +143,9 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         end
         method = checktype.to_s + "_file"
 
-        self.fail("Invalid checksum type %s" % checktype) unless respond_to?(method)
+        self.fail("Invalid checksum type #{checktype}") unless respond_to?(method)
 
-        return "{%s}%s" % [checktype, send(method, file)]
+        return "{#{checktype}}#{send(method, file)}"
     end
 
     # At this point, we don't actually modify the system, we modify
@@ -154,7 +154,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     def handlesum
         currentvalue = self.retrieve
         if currentvalue.nil?
-            raise Puppet::Error, "Checksum state for %s is somehow nil" % @resource.title
+            raise Puppet::Error, "Checksum state for #{@resource.title} is somehow nil"
         end
 
         if self.insync?(currentvalue)
@@ -215,7 +215,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         # time we get a sum.
         self.updatesum(currentvalue) unless cache(checktype())
 
-        # @resource.debug "checksum state is %s" % self.is
+        # @resource.debug "checksum state is #{self.is}"
         return currentvalue
     end
 
@@ -228,10 +228,10 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         if sum = cache(checktype())
             return false if newvalue == sum
 
-            self.debug "Replacing %s checksum %s with %s" % [@resource.title, sum, newvalue]
+            self.debug "Replacing #{@resource.title} checksum #{sum} with #{newvalue}"
             result = true
         else
-            @resource.debug "Creating checksum %s" % newvalue
+            @resource.debug "Creating checksum #{newvalue}"
             result = false
         end
 
