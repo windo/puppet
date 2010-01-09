@@ -31,7 +31,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
 
     @validtypes.each do |ctype|
         newvalue(ctype) do
-            handlesum()
+            handlesum
         end
     end
 
@@ -40,7 +40,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     # This is here because Puppet sets this internally, using
     # {md5}......
     newvalue(/^\{#{str}\}/) do
-        handlesum()
+        handlesum
     end
 
     # If they pass us a sum type, behave normally, but if they pass
@@ -121,7 +121,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     end
 
     def currentsum
-        cache(checktype())
+        cache(checktype)
     end
 
     # Calculate the sum from disk.
@@ -168,9 +168,9 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     end
 
     def insync?(currentvalue)
-        @should = [checktype()]
-        if cache(checktype())
-            return currentvalue == currentsum()
+        @should = [checktype]
+        if cache(checktype)
+            return currentvalue == currentsum
         else
             # If there's no cached sum, then we don't want to generate
             # an event.
@@ -184,7 +184,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     def retrieve(usecache = false)
         # When the 'source' is retrieving, it passes "true" here so
         # that we aren't reading the file twice in quick succession, yo.
-        currentvalue = currentsum()
+        currentvalue = currentsum
         return currentvalue if usecache and currentvalue
 
         stat = nil
@@ -197,13 +197,13 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         end
 
         # Just use the first allowed check type
-        currentvalue = getsum(checktype())
+        currentvalue = getsum(checktype)
 
         # If there is no sum defined, then store the current value
         # into the cache, so that we're not marked as being
         # out of sync.  We don't want to generate an event the first
         # time we get a sum.
-        self.updatesum(currentvalue) unless cache(checktype())
+        self.updatesum(currentvalue) unless cache(checktype)
 
         # @resource.debug "checksum state is #{self.is}"
         return currentvalue
@@ -215,7 +215,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         result = false
 
         # if we're replacing, vs. updating
-        if sum = cache(checktype())
+        if sum = cache(checktype)
             return false if newvalue == sum
 
             self.debug "Replacing #{@resource.title} checksum #{sum} with #{newvalue}"
@@ -227,7 +227,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
 
         # Cache the sum so the log message can be right if possible.
         @cached = sum
-        cache(checktype(), newvalue)
+        cache(checktype, newvalue)
         return result
     end
 end
