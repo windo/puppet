@@ -68,9 +68,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     # sum type is provided.
     def cache(type, sum = nil)
         return unless c = resource.catalog and c.host_config?
-        unless type
-            raise ArgumentError, "A type must be specified to cache a checksum"
-        end
+        raise ArgumentError, "A type must be specified to cache a checksum" unless type
         type = symbolize(type)
         type = :mtime if type == :timestamp
         type = :ctime if type == :time
@@ -139,9 +137,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
 
         return nil unless FileTest.exist?(file)
 
-        if ! FileTest.file?(file)
-            checktype = :mtime
-        end
+        checktype = :mtime if ! FileTest.file?(file)
         method = checktype.to_s + "_file"
 
         self.fail("Invalid checksum type #{checktype}") unless respond_to?(method)
@@ -154,9 +150,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     # off an event to mark any changes.
     def handlesum
         currentvalue = self.retrieve
-        if currentvalue.nil?
-            raise Puppet::Error, "Checksum state for #{@resource.title} is somehow nil"
-        end
+        raise Puppet::Error, "Checksum state for #{@resource.title} is somehow nil" if currentvalue.nil?
 
         if self.insync?(currentvalue)
             self.debug "Checksum is already in sync"
