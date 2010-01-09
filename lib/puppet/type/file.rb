@@ -510,11 +510,7 @@ Puppet::Type.newtype(:file) do
 
         val = @parameters[:recurse].value
 
-        if val and (val == true or val == :remote)
-            return true
-        else
-            return false
-        end
+        return !!(val and (val == true or val == :remote))
     end
 
     # Recurse the target of the link.
@@ -652,13 +648,15 @@ Puppet::Type.newtype(:file) do
         # The user doesn't really care, apparently
         if self[:ensure] == :present
             return true unless s = stat
-            return true if s.ftype == "file"
-            return false
+            return !!(s.ftype == "file")
         end
 
         # If we've gotten here, then :ensure isn't set
-        return true if self[:content]
-        return true if stat and stat.ftype == "file"
+        if self[:content]
+            return true
+        else
+            return true if stat and stat.ftype == "file"
+        end
         return false
     end
 
@@ -744,11 +742,7 @@ Puppet::Type.newtype(:file) do
 
     # Should we validate the checksum of the file we're writing?
     def validate_checksum?
-        if sumparam = @parameters[:checksum]
-            return sumparam.checktype.to_s !~ /time/
-        else
-            return false
-        end
+        return (sumparam = @parameters[:checksum]) && (sumparam.checktype.to_s !~ /time/)
     end
 
     private

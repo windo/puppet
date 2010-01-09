@@ -134,11 +134,7 @@ module Puppet
             end
 
             if self.should == :present
-                if currentvalue.nil? or currentvalue == :absent
-                    return false
-                else
-                    return true
-                end
+                return !(currentvalue.nil? or currentvalue == :absent)
             else
                 return super(currentvalue)
             end
