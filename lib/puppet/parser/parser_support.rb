@@ -21,9 +21,9 @@ class Puppet::Parser::Parser
     def addcontext(message, obj = nil)
         obj ||= @lexer
 
-        message += " on line %s" % obj.line
+        message += " on line #{obj.line}"
         if file = obj.file
-            message += " in file %s" % file
+            message += " in file #{file}"
         end
 
         return message
@@ -105,7 +105,7 @@ class Puppet::Parser::Parser
                 file = file + ".pp"
             end
             unless FileTest.exist?(file)
-                raise Puppet::Error, "Could not find file %s" % file
+                raise Puppet::Error, "Could not find file #{file}"
             end
         end
         raise Puppet::AlreadyImportedError, "Import loop detected" if known_resource_types.watching_file?(file)
@@ -132,7 +132,7 @@ class Puppet::Parser::Parser
         method = "find_#{type}"
         namespace = namespace.downcase
         name      = name.downcase
-        fullname = (namespace + "::" + name).sub(/^::/, '')
+        fullname = (namespace + "::#{name}").sub(/^::/, '')
 
         if name =~ /^::/
             names_to_try = [name.sub(/^::/, '')]
@@ -177,20 +177,18 @@ class Puppet::Parser::Parser
         pat = file
         if pat.index('$')
             Puppet.warning(
-                "The import of #{pat} contains a variable reference;" +
-                " variables are not interpolated for imports " +
-                "in file #{@lexer.file} at line #{@lexer.line}"
+                "The import of #{pat} contains a variable reference; variables are not interpolated for imports in file #{@lexer.file} at line #{@lexer.line}"
             )
         end
         files = Puppet::Parser::Files.find_manifests(pat, :cwd => dir, :environment => @environment)
         if files.size == 0
-            raise Puppet::ImportError.new("No file(s) found for import " + "of '#{pat}'")
+            raise Puppet::ImportError.new("No file(s) found for import of '#{pat}'")
         end
 
         files.collect { |file|
             parser = Puppet::Parser::Parser.new(@environment)
             parser.files = self.files
-            Puppet.debug("importing '%s'" % file)
+            Puppet.debug("importing '#{file}'")
 
             unless file =~ /^#{File::SEPARATOR}/
                 file = File.join(dir, file)
@@ -276,8 +274,8 @@ class Puppet::Parser::Parser
         mod = filename.scan(/^[\w-]+/).shift
 
         # First try to load the top-level module then the individual file
-        [[mod,     "module %s"              %            mod ],
-        [filename,"file %s from module %s" % [filename, mod]]
+        [[mod,     "module #{mod}"],
+        [filename,"file #{filename} from module #{mod}"]
         ].any? { |item,description| able_to_import?(classname,item,description) }
     end
 
@@ -313,12 +311,12 @@ class Puppet::Parser::Parser
         if token == 0 # denotes end of file
             value = 'end of file'
         else
-            value = "'%s'" % value[:value]
+            value = "'#{value[:value]}'"
         end
-        error = "Syntax error at %s" % [value]
+        error = "Syntax error at #{value}"
 
         if brace = @lexer.expected
-            error += "; expected '%s'" % brace
+            error += "; expected '#{brace}'"
         end
 
         except = Puppet::ParseError.new(error)
