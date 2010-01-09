@@ -55,7 +55,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
             if FileTest.directory?(@resource[:path])
                 return :time
             elsif @resource[:source] and value.to_s != "md5"
-                 self.warning("Files with source set must use md5 as checksum. Forcing to md5 from %s for %s" % [ value, @resource[:path] ])
+                self.warning("Files with source set must use md5 as checksum. Forcing to md5 from %s for %s" % [ value, @resource[:path] ])
                 return :md5
             else
                 return symbolize(value)
@@ -105,25 +105,20 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     def change_to_s(currentvalue, newvalue)
         begin
             if currentvalue == :absent
-                return "defined '%s' as '%s'" %
-                    [self.name, self.currentsum]
+                return "defined '%s' as '%s'" % [self.name, self.currentsum]
             elsif newvalue == :absent
-                return "undefined %s from '%s'" %
-                    [self.name, self.is_to_s(currentvalue)]
+                return "undefined %s from '%s'" % [self.name, self.is_to_s(currentvalue)]
             else
                 if defined? @cached and @cached
-                    return "%s changed '%s' to '%s'" %
-                        [self.name, @cached, self.is_to_s(currentvalue)]
+                    return "%s changed '%s' to '%s'" % [self.name, @cached, self.is_to_s(currentvalue)]
                 else
-                    return "%s changed '%s' to '%s'" %
-                        [self.name, self.currentsum, self.is_to_s(currentvalue)]
+                    return "%s changed '%s' to '%s'" % [self.name, self.currentsum, self.is_to_s(currentvalue)]
                 end
             end
         rescue Puppet::Error, Puppet::DevError
             raise
         rescue => detail
-            raise Puppet::DevError, "Could not convert change %s to string: %s" %
-                [self.name, detail]
+            raise Puppet::DevError, "Could not convert change %s to string: %s" % [self.name, detail]
         end
     end
 
@@ -159,8 +154,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
     def handlesum
         currentvalue = self.retrieve
         if currentvalue.nil?
-            raise Puppet::Error, "Checksum state for %s is somehow nil" %
-                @resource.title
+            raise Puppet::Error, "Checksum state for %s is somehow nil" % @resource.title
         end
 
         if self.insync?(currentvalue)
