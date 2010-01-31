@@ -158,9 +158,8 @@ class Puppet::Resource
         self.type = tmp_type
         self.title = tmp_title
 
-        (attributes[:parameters] || {}).each do |param, value|
-            validate_parameter(param) if strict?
-            self[param] = value
+        if params = attributes[:parameters]
+            extract_parameters(params)
         end
 
         tag(self.type)
@@ -379,6 +378,13 @@ class Puppet::Resource
     end
 
     private
+
+    def extract_parameters(params)
+        params.each do |param, value|
+            validate_parameter(param) if strict?
+            self[param] = value
+        end
+    end
 
     def extract_type_and_title(argtype, argtitle)
 	    if    (argtitle || argtype) =~ /^([^\[\]]+)\[(.+)\]$/m then [ $1,                 $2            ]
