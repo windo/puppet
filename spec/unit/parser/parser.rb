@@ -176,12 +176,20 @@ describe Puppet::Parser do
         end
 
         it "should create a nop node for empty branch" do
-            ast::Nop.expects(:new)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => ast::Boolean, :value => true, :line => 1, :file => nil)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => ast::Nop, :line => 1, :file => nil)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::IfStatement, :test => nil, :doc => '', :file => nil, :statements => nil, :line => 1)
             @parser.parse("if true { }")
         end
 
         it "should create a nop node for empty else branch" do
-            ast::Nop.expects(:new)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => ast::Boolean, :value => true, :line => 1, :file => nil)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => ast::Nop, :line => 1, :file => nil)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::IfStatement, :test => nil, :doc => '', :file => nil, :statements => nil, :line => 1)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::String, :value => 'test', :file => nil, :line => 1)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::ASTArray, :children => [nil], :file => nil, :line => 1)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::Else, :doc => '', :file => nil, :line => 1, :statements => nil)
+            Puppet::Parser::Parser::Real_AST_node.expects(:new).with(:class => Puppet::Parser::AST::Function, :doc => '', :name => 'notice', :file => nil, :line => 1, :ftype => :statement, :arguments => nil)
             @parser.parse("if true { notice('test') } else { }")
         end
 
@@ -250,30 +258,31 @@ describe Puppet::Parser do
             @lexer = stub 'lexer', :line => 50, :file => "/foo/bar", :getcomment => "whev"
             @parser.stubs(:lexer).returns @lexer
             @class = stub 'class', :use_docs => false
+            @scope = stub 'scope'
         end
 
         it "should return a new instance of the provided class created with the provided options" do
-            @class.expects(:new).with { |opts| opts[:foo] == "bar" }
-            @parser.ast(@class, :foo => "bar")
+            @class.expects(:instantiate).with { |scope,opts| scope == @scope and opts[:foo] == "bar" }
+            @parser.ast(@class, :foo => "bar").instantiate(@scope)
         end
 
         it "should merge the ast context into the provided options" do
-            @class.expects(:new).with { |opts| opts[:file] == "/foo" }
+            @class.expects(:instantiate).with { |scope,opts| scope == @scope and opts[:file] == "/foo" }
             @parser.expects(:ast_context).returns :file => "/foo"
-            @parser.ast(@class, :foo => "bar")
+            @parser.ast(@class, :foo => "bar").instantiate(@scope)
         end
 
         it "should prefer provided options over AST context" do
-            @class.expects(:new).with { |opts| opts[:file] == "/bar" }
+            @class.expects(:instantiate).with { |scope,opts| scope == @scope and opts[:file] == "/bar" }
             @parser.expects(:ast_context).returns :file => "/foo"
-            @parser.ast(@class, :file => "/bar")
+            @parser.ast(@class, :file => "/bar").instantiate(@scope)
         end
 
         it "should include docs when the AST class uses them" do
             @class.expects(:use_docs).returns true
-            @class.stubs(:new)
+            @class.stubs(:instantiate)
             @parser.expects(:ast_context).with(true).returns({})
-            @parser.ast(@class, :file => "/bar")
+            @parser.ast(@class, :file => "/bar").instantiate(@scope)
         end
     end
 
