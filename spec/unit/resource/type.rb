@@ -338,7 +338,7 @@ describe Puppet::Resource::Type do
             subscope = stub 'subscope', :compiler => @compiler
             @type.expects(:subscope).with(@scope, @resource).returns subscope
             @type.expects(:set_resource_parameters).with(@resource, subscope)
-
+            @type.adjust_context(@resource)
             @type.evaluate_code
         end
 
@@ -346,6 +346,7 @@ describe Puppet::Resource::Type do
             subscope = stub 'subscope', :compiler => @compiler
             @type.expects(:subscope).with(@scope, @resource).returns subscope
 
+            @type.adjust_context(@resource)
             @type.evaluate_code
             @compiler.class_scope(@type).should equal(subscope)
         end
@@ -355,7 +356,8 @@ describe Puppet::Resource::Type do
 
             @type = Puppet::Resource::Type.new(:definition, "foo")
             @type.expects(:subscope).with(@scope, @resource).returns subscope
-            @type.evaluate_code(@resource)
+            @type.adjust_context(@resource)
+            @type.evaluate_code
             @compiler.class_scope(@type).should be_nil
         end
 
@@ -388,7 +390,8 @@ describe Puppet::Resource::Type do
             end
 
             it "should evaluate the parent's resource" do
-                @type.evaluate_code(@resource)
+                @type.adjust_context(@resource)
+                @type.evaluate_code
 
                 @compiler.class_scope(@parent_type).should_not be_nil
             end
@@ -398,11 +401,13 @@ describe Puppet::Resource::Type do
 
                 @parent_resource.expects(:evaluate).never
 
-                @type.evaluate_code(@resource)
+                @type.adjust_context(@resource)
+                @type.evaluate_code
             end
 
             it "should use the parent's scope as its base scope" do
-                @type.evaluate_code(@resource)
+                @type.adjust_context(@resource)
+                @type.evaluate_code
 
                 @scope.compiler.class_scope(@type).parent.object_id.should == @scope.compiler.class_scope(@parent_type).object_id
             end
