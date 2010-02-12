@@ -150,7 +150,7 @@ class Puppet::Parser::AST
             key.respond_to?(:evaluate) ? key.safeevaluate(scope) : key
         end
 
-        def evaluate(scope)
+        def evaluate
             object = evaluate_container(scope)
 
             unless object.is_a?(Hash) or object.is_a?(Array)

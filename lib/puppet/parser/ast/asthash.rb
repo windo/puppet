@@ -8,7 +8,7 @@ class Puppet::Parser::AST
         end
 
         # Evaluate our children.
-        def evaluate(scope)
+        def evaluate
             items = {}
 
             @value.each_pair do |k,v|

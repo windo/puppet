@@ -39,11 +39,11 @@ describe Puppet::Parser::AST::ASTHash do
         key2 = stub "key2"
         value2 = stub "value2"
 
-        value1.expects(:safeevaluate).with(@scope).returns("b")
-        value2.expects(:safeevaluate).with(@scope).returns("d")
+        value1.expects(:safeevaluate).returns("b")
+        value2.expects(:safeevaluate).returns("d")
 
         operator = Puppet::Parser::AST::ASTHash.new(:value => { key1 => value1, key2 => value2})
-        operator.evaluate(@scope)
+        operator.evaluate
     end
 
     it "should return an evaluated hash" do
@@ -53,7 +53,7 @@ describe Puppet::Parser::AST::ASTHash do
         value2 = stub "value2", :safeevaluate => "d"
 
         operator = Puppet::Parser::AST::ASTHash.new(:value => { key1 => value1, key2 => value2})
-        operator.evaluate(@scope).should == { key1 => "b", key2 => "d" }
+        operator.evaluate.should == { key1 => "b", key2 => "d" }
     end
 
     it "should return a valid string with to_s" do
