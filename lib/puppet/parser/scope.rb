@@ -249,7 +249,7 @@ class Puppet::Parser::Scope
                 warning "Could not look up qualified variable '%s'; class %s could not be found" % [name, klassname]
                 return usestring ? "" : :undefined
             end
-            unless kscope = compiler.class_scope(klass)
+            unless kscope = class_scope(klass)
                 warning "Could not look up qualified variable '%s'; class %s has not been evaluated" % [name, klassname]
                 return usestring ? "" : :undefined
             end
