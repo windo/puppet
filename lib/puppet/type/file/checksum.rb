@@ -107,7 +107,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
             elsif newvalue == :absent
                 return "undefined #{self.name} from '#{self.is_to_s(currentvalue)}'"
             else
-                if defined? @cached and @cached
+                if @cached
                     return "#{self.name} changed '#{@cached}' to '#{self.is_to_s(currentvalue)}'"
                 else
                     return "#{self.name} changed '#{self.currentsum}' to '#{self.is_to_s(currentvalue)}'"
