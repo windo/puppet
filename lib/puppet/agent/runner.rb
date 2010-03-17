@@ -35,13 +35,9 @@ class Puppet::Agent::Runner
     def log_run
         msg = ""
         msg += "triggered run"
-        if options[:tags]
-            msg += " with tags #{options[:tags]}"
-        end
+        msg += " with tags #{options[:tags]}" if options[:tags]
 
-        if options[:ignoreschedules]
-            msg += " ignoring schedules"
-        end
+        msg += " ignoring schedules" if options[:ignoreschedules]
 
         Puppet.notice msg
     end

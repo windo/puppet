@@ -84,16 +84,12 @@ class Puppet::Network::Handler
 
             # Now get rid of any attributes they specifically don't want
             ignore.each do |st|
-                if trans.include? st
-                    trans.delete(st)
-                end
+                trans.delete(st) if trans.include? st
             end
 
             # And get rid of any attributes that are nil
             trans.each do |attr, value|
-                if value.nil?
-                    trans.delete(attr)
-                end
+                trans.delete(attr) if value.nil?
             end
 
             unless @local

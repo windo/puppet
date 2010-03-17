@@ -43,9 +43,7 @@ class Puppet::Transaction::EventManager
             queue_event_for_resource(resource, edge.target, method, event)
         end
 
-        if resource.self_refresh? and ! resource.deleting?
-            queue_event_for_resource(resource, resource, :refresh, event)
-        end
+        queue_event_for_resource(resource, resource, :refresh, event) if resource.self_refresh? and ! resource.deleting?
     end
 
     def queue_event_for_resource(source, target, callback, event)
