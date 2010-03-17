@@ -71,8 +71,7 @@ class Puppet::Network::Handler
             begin
                 obj = typeklass.create(:name => name, :check => retrieve)
             rescue Puppet::Error => detail
-                raise Puppet::Error, "%s[%s] could not be created: %s" %
-                    [type, name, detail]
+                raise Puppet::Error, "%s[%s] could not be created: %s" % [type, name, detail]
             end
 
             unless obj
@@ -166,8 +165,7 @@ class Puppet::Network::Handler
 
         def authcheck(file, mount, client, clientip)
             unless mount.allowed?(client, clientip)
-                mount.warning "%s cannot access %s" %
-                    [client, file]
+                mount.warning "%s cannot access %s" % [client, file]
                 raise Puppet::AuthorizationError, "Cannot access %s" % mount
             end
         end
