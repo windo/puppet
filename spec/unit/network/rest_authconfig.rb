@@ -80,7 +80,7 @@ describe Puppet::Network::RestAuthConfig do
 
             @authconfig.expects(:insert_default_acl)
 
-            @authconfig.parse()
+            @authconfig.parse
         end
     end
 
