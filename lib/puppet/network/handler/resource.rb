@@ -108,11 +108,7 @@ class Puppet::Network::Handler
 
         # Create a new fileserving module.
         def initialize(hash = {})
-            if hash[:Local]
-                @local = hash[:Local]
-            else
-                @local = false
-            end
+            @local = (hash[:Local])
         end
 
         # List all of the elements of a given type.

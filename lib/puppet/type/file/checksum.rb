@@ -164,11 +164,7 @@ Puppet::Type.type(:file).newproperty(:checksum) do
         end
 
         # If the sums are different, then return an event.
-        if self.updatesum(currentvalue)
-            return :file_changed
-        else
-            return nil
-        end
+        return (self.updatesum(currentvalue) && :file_changed)||nil
     end
 
     def insync?(currentvalue)

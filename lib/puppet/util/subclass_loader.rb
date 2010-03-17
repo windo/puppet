@@ -63,11 +63,7 @@ module Puppet::Util::SubclassLoader
             super
         end
         return nil unless defined? @subclassname
-        if c = self.send(@subclassname, method)
-            return c
-        else
-            return nil
-        end
+        return (c = self.send(@subclassname, method) && c)||nil
     end
 
     # Retrieve or calculate a name.
