@@ -34,7 +34,7 @@ class Puppet::Agent::Runner
 
     def log_run
         msg = ""
-        msg += "triggered run" %
+        msg += "triggered run"
         if options[:tags]
             msg += " with tags %s" % options[:tags]
         end
