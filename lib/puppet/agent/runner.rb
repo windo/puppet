@@ -26,7 +26,7 @@ class Puppet::Agent::Runner
 
         valid_options = [:tags, :ignoreschedules]
         options.each do |key, value|
-            raise ArgumentError, "Runner does not accept %s" % key unless valid_options.include?(key)
+            raise ArgumentError, "Runner does not accept #{key}" unless valid_options.include?(key)
         end
 
         @options = options
@@ -36,7 +36,7 @@ class Puppet::Agent::Runner
         msg = ""
         msg += "triggered run"
         if options[:tags]
-            msg += " with tags %s" % options[:tags]
+            msg += " with tags #{options[:tags]}"
         end
 
         if options[:ignoreschedules]

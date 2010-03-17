@@ -166,9 +166,9 @@ class Puppet::Module
     end
 
     def to_s
-        result = "Module %s" % name
+        result = "Module #{name}"
         if path
-            result += "(%s)" % path
+            result += "(#{path})"
         end
         result
     end

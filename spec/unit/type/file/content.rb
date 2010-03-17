@@ -140,7 +140,7 @@ describe content do
             time = Time.now
             @content.expects(:mtime_file).with("/my/file").returns time
 
-            @content.retrieve.should == "{mtime}%s" % time
+            @content.retrieve.should == "{mtime}#{time}"
         end
 
         it "should return the checksum of the file if it exists and is a normal file" do

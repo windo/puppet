@@ -32,10 +32,10 @@ class Puppet::Network::Handler
                     when "yaml"
                         bucket = YAML::load(Base64.decode64(bucket))
                     else
-                        raise Puppet::Error, "Unsupported format '%s'" % format
+                        raise Puppet::Error, "Unsupported format '#{format}'"
                     end
                 rescue => detail
-                    raise Puppet::Error, "Could not load YAML TransBucket: %s" % detail
+                    raise Puppet::Error, "Could not load YAML TransBucket: #{detail}"
                 end
             end
 
@@ -56,11 +56,11 @@ class Puppet::Network::Handler
         # Describe a given object.  This returns the 'is' values for every property
         # available on the object type.
         def describe(type, name, retrieve = nil, ignore = [], format = "yaml", client = nil, clientip = nil)
-            Puppet.info "Describing %s[%s]" % [type.to_s.capitalize, name]
+            Puppet.info "Describing #{type.to_s.capitalize}[#{name}]"
             @local = true unless client
             typeklass = nil
             unless typeklass = Puppet::Type.type(type)
-                raise Puppet::Error, "Puppet type %s is unsupported" % type
+                raise Puppet::Error, "Puppet type #{type} is unsupported"
             end
 
             obj = nil
@@ -71,12 +71,12 @@ class Puppet::Network::Handler
             begin
                 obj = typeklass.create(:name => name, :check => retrieve)
             rescue Puppet::Error => detail
-                raise Puppet::Error, "%s[%s] could not be created: %s" % [type, name, detail]
+                raise Puppet::Error, "#{type}[#{name}] could not be created: #{detail}"
             end
 
             unless obj
                 raise XMLRPC::FaultException.new(
-                    1, "Could not create %s[%s]" % [type, name]
+                    1, "Could not create #{type}[#{name}]"
                 )
             end
 
@@ -102,7 +102,7 @@ class Puppet::Network::Handler
                     trans = Base64.encode64(YAML::dump(trans))
                 else
                     raise XMLRPC::FaultException.new(
-                        1, "Unavailable config format %s" % format
+                        1, "Unavailable config format #{format}"
                     )
                 end
             end
@@ -124,7 +124,7 @@ class Puppet::Network::Handler
             @local = true unless client
             typeklass = nil
             unless typeklass = Puppet::Type.type(type)
-                raise Puppet::Error, "Puppet type %s is unsupported" % type
+                raise Puppet::Error, "Puppet type #{type} is unsupported"
             end
 
             # They can pass in false
@@ -153,7 +153,7 @@ class Puppet::Network::Handler
                     end
                 else
                     raise XMLRPC::FaultException.new(
-                        1, "Unavailable config format %s" % format
+                        1, "Unavailable config format #{format}"
                     )
                 end
             end
@@ -165,8 +165,8 @@ class Puppet::Network::Handler
 
         def authcheck(file, mount, client, clientip)
             unless mount.allowed?(client, clientip)
-                mount.warning "%s cannot access %s" % [client, file]
-                raise Puppet::AuthorizationError, "Cannot access %s" % mount
+                mount.warning "#{client} cannot access #{file}"
+                raise Puppet::AuthorizationError, "Cannot access #{mount}"
             end
         end
 
