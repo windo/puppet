@@ -61,9 +61,7 @@ class Puppet::Transaction
     # Do any necessary cleanup.  If we don't get rid of the graphs, the
     # contained resources might never get cleaned up.
     def cleanup
-        if defined?(@generated)
-            catalog.remove_resource(*@generated)
-        end
+        catalog.remove_resource(*@generated) if defined?(@generated)
     end
 
     # Copy an important relationships from the parent to the newly-generated
@@ -152,9 +150,7 @@ class Puppet::Transaction
                     ret = eval_resource(resource)
                 end
 
-                if Puppet[:evaltrace] and @catalog.host_config?
-                    resource.info "Evaluated in %0.2f seconds" % seconds
-                end
+                resource.info "Evaluated in %0.2f seconds" % seconds if Puppet[:evaltrace] and @catalog.host_config?
                 ret
             end
         ensure
@@ -270,9 +266,7 @@ class Puppet::Transaction
             begin
                 provider.prefetch(resources)
             rescue => detail
-                if Puppet[:trace]
-                    puts detail.backtrace
-                end
+                puts detail.backtrace if Puppet[:trace]
                 Puppet.err "Could not prefetch #{provider.resource_type.name} provider '#{provider.name}': #{detail}"
             end
         end
@@ -304,9 +298,7 @@ class Puppet::Transaction
             return
         end
 
-        if Puppet[:summarize]
-            puts report.summary
-        end
+        puts report.summary if Puppet[:summarize]
 
         if Puppet[:report]
             begin
@@ -349,9 +341,7 @@ class Puppet::Transaction
 
     # The tags we should be checking.
     def tags
-        unless defined?(@tags)
-            self.tags = Puppet[:tags]
-        end
+        self.tags = Puppet[:tags] unless defined?(@tags)
 
         super
     end
