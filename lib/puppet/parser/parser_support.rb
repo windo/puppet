@@ -8,7 +8,7 @@ class Puppet::Parser::Parser
   require 'puppet/resource/type'
   require 'monitor'
 
-  AST = Puppet::Parser::AST
+  Expression = Puppet::Parser::Expression
 
   include Puppet::Resource::TypeCollectionHelper
 
@@ -29,21 +29,21 @@ class Puppet::Parser::Parser
     return message
   end
 
-  # Create an AST array out of all of the args
+  # Create an Array Expression out of all of the args
   def aryfy(*args)
-    if args[0].instance_of?(AST::ASTArray)
+    if args[0].instance_of?(Expression::ArrayConstructor)
       result = args.shift
       args.each { |arg|
         result.push arg
       }
     else
-      result = ast AST::ASTArray, :children => args
+      result = ast Expression::ArrayConstructor, :children => args
     end
 
     return result
   end
 
-  # Create an AST object, and automatically add the file and line information if
+  # Create an Expression node, and automatically add the file and line information if
   # available.
   def ast(klass, hash = {})
     klass.new ast_context(klass.use_docs).merge(hash)
@@ -139,7 +139,7 @@ class Puppet::Parser::Parser
 
   # Import our files.
   def import(file)
-    return AST::ASTArray.new(:children => []) if Puppet[:ignoreimport]
+    return Expression::ArrayConstructor.new(:children => []) if Puppet[:ignoreimport]
     # use a path relative to the file doing the importing
     if @lexer.file
       dir = @lexer.file.sub(%r{[^/]+$},'').sub(/\/$/, '')
@@ -149,7 +149,7 @@ class Puppet::Parser::Parser
     if dir == ""
       dir = "."
     end
-    result = ast AST::ASTArray
+    result = ast Expression::ArrayConstructor
 
     # We can't interpolate at this point since we don't have any
     # scopes set up. Warn the user if they use a variable reference
