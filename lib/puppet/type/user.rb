@@ -248,7 +248,7 @@ end
 
         def retrieve
             absent = false
-            properties().inject({}) { |prophash, property|
+            properties.inject({}) { |prophash, property|
                 current_value = :absent
 
                 if absent
