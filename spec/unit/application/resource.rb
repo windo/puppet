@@ -50,8 +50,8 @@ describe "resource" do
         end
 
         it "should load Facter facts" do
-          Facter.expects(:loadfacts).once
-          @resource.run_preinit
+            Facter.expects(:loadfacts).once
+            @resource.run_preinit
         end
     end
 

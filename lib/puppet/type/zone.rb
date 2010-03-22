@@ -172,8 +172,7 @@ Puppet::Type.newtype(:zone) do
                     end
                     provider.send(method)
                 else
-                    raise Puppet::DevError, "Cannot move %s from %s" %
-                        [direction, st[:name]]
+                    raise Puppet::DevError, "Cannot move %s from %s" % [direction, st[:name]]
                 end
             end
 
@@ -236,8 +235,8 @@ end
 
         defaultto :shared
 
-	newvalue :shared
-	newvalue :exclusive
+        newvalue :shared
+        newvalue :exclusive
 
         def configtext
             "set ip-type=#{self.should}"
@@ -313,8 +312,7 @@ end
                 security_policy=NONE
                 root_password=&lt;%= password %>
                 timeserver=localhost
-                name_service=DNS {domain_name=&lt;%= domain %>
-                        name_server=&lt;%= nameserver %>}
+                name_service=DNS {domain_name=&lt;%= domain %> name_server=&lt;%= nameserver %>}
                 network_interface=primary {hostname=&lt;%= realhostname %>
                         ip_address=&lt;%= ip %>
                         netmask=&lt;%= netmask %>
@@ -380,21 +378,21 @@ end
 
     validate do
         value = self[:ip]
-	if self[:iptype] == :exclusive
-	    self.fail "ip must only contain interface name" if value =~ /:/
-	elsif value
-	    self.fail "ip must contain interface name and ip address separated by a \":\"" unless value =~ /:/
-	    interface, address = value.split(':')
-	    begin
+        if self[:iptype] == :exclusive
+            self.fail "ip must only contain interface name" if value =~ /:/
+        elsif value
+            self.fail "ip must contain interface name and ip address separated by a \":\"" unless value =~ /:/
+            interface, address = value.split(':')
+            begin
                 IPAddr.new(address)
             rescue ArgumentError
                 self.fail "'%s' is an invalid IP address" % address
             end
-	end
+        end
 
-	unless self[:path]
-	    self.fail "zone path is required"
-	end
+        unless self[:path]
+            self.fail "zone path is required"
+        end
     end
 
     def retrieve
