@@ -33,9 +33,7 @@ class Puppet::Network::Server
     # don't try to start.
     def create_pidfile
         Puppet::Util.sync(Puppet[:name]).synchronize(Sync::EX) do
-            unless Puppet::Util::Pidlock.new(pidfile).lock
-                raise "Could not create PID file: %s" % [pidfile]
-            end
+            raise "Could not create PID file: %s" % [pidfile] unless Puppet::Util::Pidlock.new(pidfile).lock
         end
     end
 
@@ -43,9 +41,7 @@ class Puppet::Network::Server
     def remove_pidfile
         Puppet::Util.sync(Puppet[:name]).synchronize(Sync::EX) do
             locker = Puppet::Util::Pidlock.new(pidfile)
-            if locker.locked?
-                locker.unlock or Puppet.err "Could not remove PID file %s" % [pidfile]
-            end
+            locker.unlock or Puppet.err "Could not remove PID file %s" % [pidfile] if locker.locked?
         end
     end
 

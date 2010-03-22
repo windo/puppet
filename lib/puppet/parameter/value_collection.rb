@@ -28,9 +28,7 @@ class Puppet::Parameter::ValueCollection
                 end.join(", ") + "."
             end
 
-            unless regexes.empty?
-                @doc += "  Values can match ``" + regexes.join("``, ``") + "``."
-            end
+            @doc += "  Values can match ``" + regexes.join("``, ``") + "``." unless regexes.empty?
         end
 
         @doc
@@ -104,9 +102,7 @@ class Puppet::Parameter::ValueCollection
             value.call = options[:call] || :none
         end
 
-        if block_given? and ! value.regex?
-            value.method ||= "set_" + value.name.to_s
-        end
+        value.method ||= "set_" + value.name.to_s if block_given? and ! value.regex?
 
         value
     end
@@ -127,13 +123,9 @@ class Puppet::Parameter::ValueCollection
         unless @values.detect { |name, v| v.match?(value) }
             str = "Invalid value %s. " % [value.inspect]
 
-            unless values.empty?
-                str += "Valid values are %s. " % values.join(", ")
-            end
+            str += "Valid values are %s. " % values.join(", ") unless values.empty?
 
-            unless regexes.empty?
-                str += "Valid values match %s." % regexes.join(", ")
-            end
+            str += "Valid values match %s." % regexes.join(", ") unless regexes.empty?
 
             raise ArgumentError, str
         end

@@ -87,9 +87,7 @@ class Puppet::FileServing::Configuration::Parser < Puppet::Util::LoadedFile
 
     # Create a new mount.
     def newmount(name)
-        if @mounts.include?(name)
-            raise ArgumentError, "%s is already mounted at %s" % [@mounts[name], name], @count, file
-        end
+        raise ArgumentError, "%s is already mounted at %s" % [@mounts[name], name], @count, file if @mounts.include?(name)
         case name
         when "modules"
             mount = Mount::Modules.new(name)

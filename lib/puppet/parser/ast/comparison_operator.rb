@@ -33,9 +33,7 @@ class Puppet::Parser::AST
         def initialize(hash)
             super
 
-            unless %w{== != < > <= >=}.include?(@operator)
-                raise ArgumentError, "Invalid comparison operator %s" % @operator
-            end
+            raise ArgumentError, "Invalid comparison operator %s" % @operator unless %w{== != < > <= >=}.include?(@operator)
         end
     end
 end

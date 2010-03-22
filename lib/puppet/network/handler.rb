@@ -30,9 +30,7 @@ module Puppet::Network
         def self.side(side = nil)
             if side
                 side = side.intern if side.is_a?(String)
-                unless [:client, :server].include?(side)
-                    raise ArgumentError, "Invalid side registration '%s' for %s" % [side, self.name]
-                end
+                raise ArgumentError, "Invalid side registration '%s' for %s" % [side, self.name] unless [:client, :server].include?(side)
                 @side = side
             else
                 @side ||= :server

@@ -100,9 +100,7 @@ Puppet::Type.type(:package).provide :pkg, :parent => Puppet::Provider::Package d
         hash = self.class.parse_line(output) ||
             {:ensure => :absent, :status => 'missing', :name => @resource[:name], :error => 'ok'}
 
-        if hash[:error] != "ok"
-            raise Puppet::Error.new( "Package %s, version %s is in error state: %s" % [hash[:name], hash[:version], hash[:error]])
-        end
+        raise Puppet::Error.new( "Package %s, version %s is in error state: %s" % [hash[:name], hash[:version], hash[:error]]) if hash[:error] != "ok"
 
         return hash
     end

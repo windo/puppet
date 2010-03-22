@@ -31,9 +31,7 @@ class Puppet::Transaction::Report::Processor < Puppet::Indirector::Code
                     newrep.extend(mod)
                     newrep.process
                 rescue => detail
-                    if Puppet[:trace]
-                        puts detail.backtrace
-                    end
+                    puts detail.backtrace if Puppet[:trace]
                     Puppet.err "Report %s failed: %s" % [name, detail]
                 end
             else

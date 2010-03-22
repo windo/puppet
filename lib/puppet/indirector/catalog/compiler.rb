@@ -67,9 +67,7 @@ class Puppet::Resource::Catalog::Compiler < Puppet::Indirector::Code
     # Compile the actual catalog.
     def compile(node)
         str = "Compiled catalog for %s" % node.name
-        if node.environment
-            str += " in environment %s" % node.environment
-        end
+        str += " in environment %s" % node.environment if node.environment
         config = nil
 
         loglevel = networked? ? :notice : :none

@@ -20,9 +20,7 @@ class PuppetTest::TestCase < Test::Unit::TestCase
         elsif self.runnable?
             return super
         else
-            if defined? $console
-                puts "Skipping %s: %s" % [name, @messages.join(", ")]
-            end
+            puts "Skipping %s: %s" % [name, @messages.join(", ")] if defined? $console
             suite = Test::Unit::TestSuite.new(name)
             return suite
         end

@@ -98,22 +98,16 @@ class Puppet::Network::Handler
                 @local = false
             end
 
-            if hash[:Config] == false
-                @noreadconfig = true
-            end
+            @noreadconfig = true if hash[:Config] == false
 
             @passed_configuration_path = hash[:Config]
 
             if hash.include?(:Mount)
                 @passedconfig = true
-                unless hash[:Mount].is_a?(Hash)
-                    raise Puppet::DevError, "Invalid mount hash %s" % hash[:Mount].inspect
-                end
+                raise Puppet::DevError, "Invalid mount hash %s" % hash[:Mount].inspect unless hash[:Mount].is_a?(Hash)
 
                 hash[:Mount].each { |dir, name|
-                    if FileTest.exists?(dir)
-                        self.mount(dir, name)
-                    end
+                    self.mount(dir, name) if FileTest.exists?(dir)
                 }
                 self.mount(nil, MODULES)
                 self.mount(nil, PLUGINS)
@@ -179,9 +173,7 @@ class Puppet::Network::Handler
 
             mount, path = convert(url, client, clientip)
 
-            if client
-                mount.info "Sending %s to %s" % [url, client]
-            end
+            mount.info "Sending %s to %s" % [url, client] if client
 
             unless mount.path_exists?(path, client)
                 mount.debug "#{mount} reported that #{path} does not exist"
@@ -264,9 +256,7 @@ class Puppet::Network::Handler
 
             return unless configuration
 
-            if check and ! @configuration.changed?
-                return
-            end
+            return if check and ! @configuration.changed?
 
             newmounts = {}
             begin
@@ -379,9 +369,7 @@ class Puppet::Network::Handler
             # We let the check raise an error, so that it can raise an error
             # pointing to the specific problem.
             newmounts.each { |name, mount|
-                unless mount.valid?
-                    raise FileServerError, "Invalid mount %s" % name
-                end
+                raise FileServerError, "Invalid mount %s" % name unless mount.valid?
             }
             @mounts = newmounts
         end
@@ -529,9 +517,7 @@ class Puppet::Network::Handler
                 end
 
                 # This, ah, might be completely redundant
-                unless obj[:links] == links
-                    obj[:links] = links
-                end
+                obj[:links] = links unless obj[:links] == links
 
                 return obj
             end
@@ -572,15 +558,9 @@ class Puppet::Network::Handler
                     # Mark that we're expandable.
                     @expandable = true
                 else
-                    unless FileTest.exists?(path)
-                        raise FileServerError, "%s does not exist" % path
-                    end
-                    unless FileTest.directory?(path)
-                        raise FileServerError, "%s is not a directory" % path
-                    end
-                    unless FileTest.readable?(path)
-                        raise FileServerError, "%s is not readable" % path
-                    end
+                    raise FileServerError, "%s does not exist" % path unless FileTest.exists?(path)
+                    raise FileServerError, "%s is not a directory" % path unless FileTest.directory?(path)
+                    raise FileServerError, "%s is not readable" % path unless FileTest.readable?(path)
                     @expandable = false
                 end
                 @path = path

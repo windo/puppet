@@ -40,9 +40,7 @@ module ParsedMountTesting
         }
 
         @provider_class.fields(:parsed).each do |field|
-            unless args.include? field
-                args[field] = "fake%s%s" % [field, @pcount]
-            end
+            args[field] = "fake%s%s" % [field, @pcount] unless args.include? field
         end
 
         return args

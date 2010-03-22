@@ -79,9 +79,7 @@ Puppet::Application.new(:puppetrun) do
                         # Remove our host from the list of children, so the parallelization
                         # continues working.
                         @children.delete(pid)
-                        if $CHILD_STATUS.exitstatus != 0
-                            failures << host
-                        end
+                        failures << host if $CHILD_STATUS.exitstatus != 0
                         print "%s finished with exit code %s\n" % [host, $CHILD_STATUS.exitstatus]
                     else
                         $stderr.puts "Could not find host for PID %s with status %s" % [pid, $CHILD_STATUS.exitstatus]

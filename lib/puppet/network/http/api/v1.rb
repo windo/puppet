@@ -39,9 +39,7 @@ module Puppet::Network::HTTP::API::V1
     end
 
     def indirection_method(http_method, indirection)
-        unless METHOD_MAP[http_method]
-            raise ArgumentError, "No support for http method %s" % http_method
-        end
+        raise ArgumentError, "No support for http method %s" % http_method unless METHOD_MAP[http_method]
 
         unless method = METHOD_MAP[http_method][plurality(indirection)]
             raise ArgumentError, "No support for plural %s operations" % http_method

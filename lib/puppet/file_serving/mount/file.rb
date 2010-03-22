@@ -55,12 +55,8 @@ class Puppet::FileServing::Mount::File < Puppet::FileServing::Mount
             # Mark that we're expandable.
             @expandable = true
         else
-            unless FileTest.directory?(path)
-                raise ArgumentError, "%s does not exist or is not a directory" % path
-            end
-            unless FileTest.readable?(path)
-                raise ArgumentError, "%s is not readable" % path
-            end
+            raise ArgumentError, "%s does not exist or is not a directory" % path unless FileTest.directory?(path)
+            raise ArgumentError, "%s is not readable" % path unless FileTest.readable?(path)
             @expandable = false
         end
         @path = path
