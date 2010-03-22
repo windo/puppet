@@ -37,8 +37,8 @@ module Puppet
             end
 
             # Set up the http log.
-            def httplog
-                args = []
+def httplog
+                    args = []
 
                 # yuck; separate http logs
                 file = nil
@@ -60,8 +60,8 @@ module Puppet
                 log = WEBrick::Log.new(*args)
 
 
-                return log
-            end
+    log
+end
 
             # Create our server, yo.
             def initialize(hash = {})
