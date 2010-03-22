@@ -21,7 +21,7 @@ class TestGroup < Test::Unit::TestCase
         end
 
         def exists?
-            if defined? @ensure and @ensure == :present
+            if defined?(@ensure) and @ensure == :present
                 true
             else
                 false
@@ -84,8 +84,11 @@ class TestGroup < Test::Unit::TestCase
             group[:gid] = "15"
         }
 
-        assert_equal(15, group.should(:gid),
-                     "Did not convert gid to number")
+
+            assert_equal(
+                15, group.should(:gid),
+
+                    "Did not convert gid to number")
 
         comp = mk_catalog(group)
         trans = assert_events([:group_modified], comp, "group")
@@ -95,8 +98,11 @@ class TestGroup < Test::Unit::TestCase
             group[:gid] = 16
         }
 
-        assert_equal(16, group.should(:gid),
-                     "Did not keep gid as number")
+
+            assert_equal(
+                16, group.should(:gid),
+
+                    "Did not keep gid as number")
 
         # Now switch to 16
         trans = assert_events([:group_modified], comp, "group")
@@ -112,8 +118,11 @@ class TestGroup < Test::Unit::TestCase
             gobj = nil
             comp = nil
             assert_nothing_raised {
+
                 gobj = Puppet::Type.type(:group).new(
+
                     :name => group,
+
                     :check => [:gid]
                 )
             }
@@ -127,7 +136,7 @@ class TestGroup < Test::Unit::TestCase
             }
 
             assert(current_values[gobj.property(:gid)],
-                   "Failed to retrieve gid")
+                "Failed to retrieve gid")
         }
     end
 
@@ -136,8 +145,11 @@ class TestGroup < Test::Unit::TestCase
         name = "pptestgr"
 
         assert_nothing_raised {
+
             gobj = Puppet::Type.type(:group).new(
+
                 :name => name,
+
                 :gid => 123
             )
         }
@@ -145,7 +157,10 @@ class TestGroup < Test::Unit::TestCase
 
         trans = assert_events([:group_created], gobj, "group")
 
-        assert(gobj.provider.exists?,
+
+            assert(
+                gobj.provider.exists?,
+
                 "Did not create group")
 
         tests = Puppet::Type.type(:group).validproperties
@@ -161,7 +176,10 @@ class TestGroup < Test::Unit::TestCase
 
         assert_rollback_events(trans, [:group_removed], "group")
 
-        assert(! gobj.provider.exists?,
+
+            assert(
+                ! gobj.provider.exists?,
+
                 "Did not delete group")
     end
 end

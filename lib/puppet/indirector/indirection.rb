@@ -79,7 +79,7 @@ class Puppet::Indirector::Indirection
     def doc
         text = ""
 
-        if defined? @doc and @doc
+        if defined?(@doc) and @doc
             text += scrub(@doc) + "\n\n"
         end
 
@@ -162,7 +162,7 @@ class Puppet::Indirector::Indirection
     end
 
     # Expire a cached object, if one is cached.  Note that we now actually
-    # remove it if possible, and only mark it as expired if destroy isn't 
+    # remove it if possible, and only mark it as expired if destroy isn't
     # supported.
     def expire(key, *args)
         if cache? and instance = cache.find(request(:find, key, *args))
