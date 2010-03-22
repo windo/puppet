@@ -26,7 +26,7 @@ class Puppet::Network::Handler
             # Unescape the report
             report = CGI.unescape(report) unless @local
 
-            Puppet.info "Processing reports %s for %s" % [reports().join(", "), client]
+            Puppet.info "Processing reports %s for %s" % [reports.join(", "), client]
             begin
                 process(report)
             rescue => detail
@@ -52,7 +52,7 @@ class Puppet::Network::Handler
             # Used for those reports that accept yaml
             client = report.host
 
-            reports().each do |name|
+            reports.each do |name|
                 if mod = Puppet::Reports.report(name)
                     # We have to use a dup because we're including a module in the
                     # report.

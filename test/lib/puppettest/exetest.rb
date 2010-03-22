@@ -36,7 +36,7 @@ module PuppetTest::ExeTest
         cmd = cmd.unshift(@ruby).join(" ")
 
         out = nil
-        Dir.chdir(bindir()) {
+        Dir.chdir(bindir) {
             out = %x{#{@ruby} #{cmd}}
         }
         return out
@@ -45,7 +45,7 @@ module PuppetTest::ExeTest
     def startmasterd(args = "")
         output = nil
 
-        manifest = mktestmanifest()
+        manifest = mktestmanifest
         args += " --manifest %s" % manifest
         args += " --confdir %s" % Puppet[:confdir]
         args += " --rundir %s" % File.join(Puppet[:vardir], "run")

@@ -12,7 +12,7 @@ class TestCron < Test::Unit::TestCase
     def setup
         super
 
-        setme()
+        setme
 
         @crontype = Puppet::Type.type(:cron)
         @provider = @crontype.defaultprovider
@@ -57,7 +57,7 @@ class TestCron < Test::Unit::TestCase
     # Create a cron job with all fields filled in.
     def mkcron(name, addargs = true)
         cron = nil
-        command = "date > %s/crontest%s" % [tmpdir(), name]
+        command = "date > %s/crontest%s" % [tmpdir, name]
         args = nil
         if addargs
             args = {

@@ -112,7 +112,7 @@ class Puppet::Network::Handler
                 if configuration
                     readconfig(false) # don't check the file the first time.
                 else
-                    create_default_mounts()
+                    create_default_mounts
                 end
             end
         end
@@ -426,7 +426,7 @@ class Puppet::Network::Handler
                 else
                     Puppet.notice "No client; expanding '%s' with local host" % path
                     # Else, use the local information
-                    map = localmap()
+                    map = localmap
                 end
                 path.gsub(/%(.)/) do |v|
                     key = $1

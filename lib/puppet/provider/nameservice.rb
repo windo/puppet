@@ -51,14 +51,14 @@ class Puppet::Provider::NameService < Puppet::Provider
         # for both users and groups.
         def listbyname
             names = []
-            Etc.send("set%sent" % section())
+            Etc.send("set%sent" % section)
             begin
-                while ent = Etc.send("get%sent" % section())
+                while ent = Etc.send("get%sent" % section)
                     names << ent.name
                     yield ent.name if block_given?
                 end
             ensure
-                Etc.send("end%sent" % section())
+                Etc.send("end%sent" % section)
             end
 
             return names
@@ -205,7 +205,7 @@ class Puppet::Provider::NameService < Puppet::Provider
     # Retrieve what we can about our object
     def getinfo(refresh)
         if @objectinfo.nil? or refresh == true
-            @etcmethod ||= ("get" + self.class.section().to_s + "nam").intern
+            @etcmethod ||= ("get" + self.class.section.to_s + "nam").intern
             begin
                 @objectinfo = Etc.send(@etcmethod, @resource[:name])
             rescue ArgumentError => detail

@@ -84,7 +84,7 @@ class Parser
             modpath = $1
             name = $2
             Puppet.debug "rdoc: module %s into %s ?" % [name, modpath]
-            Puppet::Module.modulepath().each do |mp|
+            Puppet::Module.modulepath.each do |mp|
                 if File.identical?(modpath,mp)
                     Puppet.debug "rdoc: found module %s" % name
                     return name
@@ -95,7 +95,7 @@ class Parser
             # there can be paths we don't want to scan under modules
             # imagine a ruby or manifest that would be distributed as part as a module
             # but we don't want those to be hosted under <site>
-            Puppet::Module.modulepath().each do |mp|
+            Puppet::Module.modulepath.each do |mp|
                 # check that fullpath is a descendant of mp
                 dirname = fullpath
                 while (dirname = File.dirname(dirname)) != '/'
