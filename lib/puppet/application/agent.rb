@@ -104,9 +104,9 @@ Puppet::Application.new(:agent) do
 
     command(:fingerprint) do
         unless cert = host.certificate || host.certificate_request
-           $stderr.puts "Fingerprint asked but no certificate nor certificate request have yet been issued"
-           exit(1)
-           return
+            $stderr.puts "Fingerprint asked but no certificate nor certificate request have yet been issued"
+            exit(1)
+            return
         end
         unless fingerprint = cert.fingerprint(options[:digest])
             raise ArgumentError, "Could not get fingerprint for digest '#{options[:digest]}'"
@@ -187,8 +187,7 @@ Puppet::Application.new(:agent) do
 
     def setup_listen
         unless FileTest.exists?(Puppet[:authconfig])
-            Puppet.err "Will not start without authorization file %s" %
-                Puppet[:authconfig]
+            Puppet.err "Will not start without authorization file %s" % Puppet[:authconfig]
             exit(14)
         end
 
