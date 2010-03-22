@@ -34,7 +34,7 @@ class Puppet::Parser::AST
 
     # Does this ast object set something?  If so, it gets evaluated first.
     def self.settor?
-        if defined? @settor
+        if defined?(@settor)
             @settor
         else
             false

@@ -23,7 +23,7 @@ class Puppet::Parser::AST
                 if Puppet::Parser::Scope.true?(value)
                     return @statements.safeevaluate(scope)
                 else
-                    return ((defined? @else) && (@else.safeevaluate(scope)))||nil
+                    return ((defined?(@else)) && (@else.safeevaluate(scope)))||nil
                 end
             ensure
                 scope.unset_ephemeral_var
