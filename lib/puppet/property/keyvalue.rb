@@ -76,13 +76,13 @@ module Puppet
                 end
             end
 
-            def insync?(is)
-                return true unless defined?(@should) and @should
+def insync?(is)
+                    return true unless defined?(@should) and @should
 
                 return true unless is
 
-                return (is == self.should)
-            end
+    (is == self.should)
+end
         end
     end
 end

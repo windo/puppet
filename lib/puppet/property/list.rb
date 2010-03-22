@@ -65,13 +65,13 @@ module Puppet
                 dearrayify(is)
             end
 
-            def insync?(is)
-                return true unless defined?(@should) and @should
+def insync?(is)
+                    return true unless defined?(@should) and @should
 
                 return true unless is
 
-                return (prepare_is_for_comparison(is) == self.should)
-            end
+    (prepare_is_for_comparison(is) == self.should)
+end
         end
     end
 end

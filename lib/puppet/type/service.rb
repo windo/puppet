@@ -68,16 +68,16 @@ module Puppet
                 return provider.status
             end
 
-            def sync
-                event = super()
+def sync
+                    event = super()
 
                 if property = @resource.property(:enable)
                     val = property.retrieve
                     property.sync unless property.insync?(val)
                 end
 
-                return event
-            end
+    event
+end
         end
 
         newparam(:binary) do
