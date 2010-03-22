@@ -103,8 +103,8 @@ module Puppet
             end
 
             # Actually execute the command.
-            def sync
-                olddir = nil
+def sync
+                    olddir = nil
 
                 # We need a dir to change to, even if it's just the cwd
                 dir = self.resource[:cwd] || Dir.pwd
@@ -139,8 +139,8 @@ module Puppet
                     self.fail("#{self.resource[:command]} returned #{status.exitstatus} instead of one of [#{self.should.join(",")}]")
                 end
 
-                return event
-            end
+    event
+end
         end
 
         newparam(:command) do
@@ -364,16 +364,16 @@ module Puppet
             end
 
             # Return true if the command does not return 0.
-            def check(value)
-                begin
+def check(value)
+                    begin
                     output, status = @resource.run(value, true)
                 rescue Timeout::Error
                     err "Check #{value.inspect} exceeded timeout"
                     return false
                 end
 
-                return status.exitstatus != 0
-            end
+    status.exitstatus != 0
+end
         end
 
         newcheck(:onlyif) do
@@ -406,16 +406,16 @@ module Puppet
             end
 
             # Return true if the command returns 0.
-            def check(value)
-                begin
+def check(value)
+                    begin
                     output, status = @resource.run(value, true)
                 rescue Timeout::Error
                     err "Check #{value.inspect} exceeded timeout"
                     return false
                 end
 
-                return status.exitstatus == 0
-            end
+    status.exitstatus == 0
+end
         end
 
         # Exec names are not isomorphic with the objects.
