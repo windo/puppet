@@ -419,7 +419,7 @@ describe Puppet::Resource::Type do
       it "should use the parent's scope as its base scope" do
         @type.evaluate_code(@resource)
 
-        @scope.compiler.class_scope(@type).parent.object_id.should == @scope.compiler.class_scope(@parent_type).object_id
+        @scope.class_scope(@type).parent.object_id.should == @scope.class_scope(@parent_type).object_id
       end
     end
   end
