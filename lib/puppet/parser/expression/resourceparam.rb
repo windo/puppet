@@ -10,12 +10,12 @@ class Puppet::Parser::Expression
     end
 
     # Return the parameter and the value.
-    def evaluate(scope)
+    def compute_denotation(scope)
 
             return Puppet::Parser::Resource::Param.new(
         
         :name => @param,
-        :value => @value.safeevaluate(scope),
+        :value => @value.denotation(scope),
     
         :source => scope.source, :line => self.line, :file => self.file,
         :add => self.add

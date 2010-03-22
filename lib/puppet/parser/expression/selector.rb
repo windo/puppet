@@ -11,9 +11,9 @@ class Puppet::Parser::Expression
     end
 
     # Find the value that corresponds with the test.
-    def evaluate(scope)
+    def compute_denotation(scope)
       # Get our parameter.
-      paramvalue = @param.safeevaluate(scope)
+      paramvalue = @param.denotation(scope)
 
       sensitive = Puppet[:casesensitive]
 
@@ -24,14 +24,14 @@ class Puppet::Parser::Expression
       # Then look for a match in the options.
       @values.each do |obj|
         # short circuit asap if we have a match
-        return obj.value.safeevaluate(scope) if obj.param.evaluate_match(paramvalue, scope, :file => file, :line => line, :sensitive => sensitive)
+        return obj.value.denotation(scope) if obj.param.evaluate_match(paramvalue, scope, :file => file, :line => line, :sensitive => sensitive)
 
         # Store the default, in case it's necessary.
         default = obj if obj.param.is_a?(Default)
       end
 
       # Unless we found something, look for the default.
-      return default.value.safeevaluate(scope) if default
+      return default.value.denotation(scope) if default
 
       self.fail Puppet::ParseError, "No matching value for selector param '#{paramvalue}'"
     ensure

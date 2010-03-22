@@ -8,11 +8,11 @@ class Puppet::Parser::Expression
     end
 
     # Evaluate our children.
-    def evaluate(scope)
+    def compute_denotation(scope)
       items = {}
 
       @value.each_pair do |k,v|
-        items.merge!({ k => v.safeevaluate(scope) })
+        items.merge!({ k => v.denotation(scope) })
       end
 
       return items
