@@ -257,6 +257,22 @@ class TestAuthStore < Test::Unit::TestCase
     }
   end
 
+  def test_regex
+    assert_nothing_raised("Failed to @store regexes") {
+      @store.allow("/some-domain\.com/")
+      @store.allow("/^(test-)?host[0-9]+\.other-domain\.(com|org|net)$/")
+    }
+
+    %w{
+      some-domain.com
+      prefix.some-domain.com.suffix
+      host5.other-domain.com
+      test-host12.other-domain.net
+    }.each { |name|
+      assert(@store.allowed?(name, "192.168.0.1"), "Host #{name} not allowed")
+    }
+  end
+
   # #531
   def test_case_insensitivity
     @store.allow("hostname.com")
